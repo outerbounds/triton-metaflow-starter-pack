@@ -1,4 +1,4 @@
-from metaflow import FlowSpec, step, batch, pypi_base, card, current
+from metaflow import FlowSpec, step, batch, conda_base, pypi_base, card, current
 from metaflow.cards import Image
 
 # user packages
@@ -6,20 +6,16 @@ from dependencies import *
 from ops import ModelStore
 from fraud_detection_logic import FeatureEngineering, ModelTraining
 
+
 @pypi_base(
     python=python_version,
-    packages={
-        **pypi_common_pkgs,
-        **pypi_feature_eng_pkgs,
-        # **pypi_tf_pkg,
-        **pypi_xgb_pkg,
-    },
+    packages={**pypi_common_pkgs, **pypi_feature_eng_pkgs, **pypi_xgb_pkg},
 )
 class FraudClassifierTreeSelection(
-    FlowSpec, 
-    FeatureEngineering, 
-    ModelTraining, 
-    ModelStore # introduces required param "model-repo" expecting s3 uri the flow's task execution role can write to
+    FlowSpec,
+    FeatureEngineering,
+    ModelTraining,
+    ModelStore,  # introduces required param "model-repo" expecting s3 uri the flow's task execution role can write to
 ):
     _plot_learning_curves = True
 
@@ -32,9 +28,7 @@ class FraudClassifierTreeSelection(
     @step
     def preprocess(self):
         self.compute_features()
-        self.setup_model_grid(
-            model_list=["Random Forest"]
-        )
+        self.setup_model_grid(model_list=["Random Forest"])
         self.next(self.train, foreach="model_grid")
 
     @batch(cpu=4, memory=16000)
@@ -51,15 +45,15 @@ class FraudClassifierTreeSelection(
     @card
     @step
     def eval(self, inputs):
-
         # propagate data artifacts
+        self.columns = inputs[0].columns
         self.X_train_full = inputs[0].X_train_full
         self.X_test_full = inputs[0].X_test_full
         self.y_train_full = inputs[0].y_train_full
         self.y_test_full = inputs[0].y_test_full
 
         # score trained models
-        from my_fraud_detection_logic import score_trained_model
+        from fraud_detection_logic import score_trained_model
         import pandas as pd
 
         best_score = -1
@@ -83,7 +77,7 @@ class FraudClassifierTreeSelection(
                 self.best_model_type = input.model_name
         self.scores = pd.DataFrame(scores)
 
-        # push best model - function defined in 
+        # push best model
         self.store_sklearn_estimator(model=self.best_model)
 
         # plot learning curves
@@ -114,6 +108,7 @@ class FraudClassifierTreeSelection(
         scores = r.data.scores
         """
         )
+
 
 if __name__ == "__main__":
     FraudClassifierTreeSelection()

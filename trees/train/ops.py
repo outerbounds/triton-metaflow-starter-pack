@@ -1,7 +1,7 @@
 import os
 from subprocess import check_output
 from metaflow import S3, current, Parameter
-import logging 
+import logging
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -41,22 +41,24 @@ parameters [
 instance_group [{{ kind: KIND_CPU }}]
 """
 
-class ModelStore():
 
+class ModelStore:
     model_repo = Parameter("model-repo", required=True, help="S3 path to model repo")
 
     def store_sklearn_estimator(self, model):
         from treelite.sklearn import import_model
+
         self.serialized_model = import_model(model).serialize_bytes()
         self.deployment_name = f"{current.flow_name}-{current.run_id}"
         self.config = SKLEARN_TRITON_CONFIG.format(
-            deployment_name=self.deployment_name,
-            dims=model.n_features_in_
+            deployment_name=self.deployment_name, dims=model.n_features_in_
         )
         with S3(s3root=self.model_repo) as s3:
-            url = s3.put_many([(f"{self.deployment_name}/1/checkpoint.tl", self.serialized_model),
-                               (f"{self.deployment_name}/config.pbtxt", self.config)])
+            url = s3.put_many(
+                [
+                    (f"{self.deployment_name}/1/checkpoint.tl", self.serialized_model),
+                    (f"{self.deployment_name}/config.pbtxt", self.config),
+                ]
+            )
             msg = f"The model and its Triton config has deployed at {url}"
             logging.info(msg)
-
-

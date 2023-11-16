@@ -118,8 +118,8 @@ default_model_grid = {
     "Decision Tree": GridSearchCV(
         DecisionTreeClassifier(),
         {
-            "criterion": ["gini"], #, "entropy"],
-            "max_depth": [2,4,6],
+            "criterion": ["gini"],  # , "entropy"],
+            "max_depth": [2, 4, 6],
             # "min_samples_leaf": list(range(5, 7, 1)),
         },
         verbose=2,
@@ -127,7 +127,7 @@ default_model_grid = {
     "Random Forest": GridSearchCV(
         RandomForestClassifier(),
         {
-            "criterion": ["gini"], #, "entropy"],
+            "criterion": ["gini"],  # , "entropy"],
             "max_depth": [2],
             "n_estimators": [50],  # , 100, 150],
         },
@@ -135,16 +135,16 @@ default_model_grid = {
     "Extra Trees": GridSearchCV(
         ExtraTreeClassifier(),
         {
-            "criterion": ["gini"], #, "entropy"],
-            "max_depth": [2,4,6],
+            "criterion": ["gini"],  # , "entropy"],
+            "max_depth": [2, 4, 6],
         },
         verbose=2,
     ),
     "Gradient Boost": GridSearchCV(
         GradientBoostingClassifier(),
         {
-            "criterion": ["squared_error"], #, "friedman_mse"],
-            "max_depth": [2,4,6],
+            "criterion": ["squared_error"],  # , "friedman_mse"],
+            "max_depth": [2, 4, 6],
         },
         verbose=2,
     ),
@@ -173,18 +173,20 @@ class FeatureEngineering(object):
             os.rename(obj.path, out_path)
         assert os.path.exists(out_path)
 
-    def compute_features(self, out_path=None):
+    def compute_features(self, filename=None, out_path=None):
+        if filename is not None:
+            self.filename = filename
+
         if not out_path:
             out_path = os.path.abspath(self.filename)
 
         # move data from s3 to instance
-        from my_fraud_detection_logic import load_data
 
         self.download_data_to_instance(out_path=out_path)
         self.df = load_data(data_path=self.filename)
+        self.columns = self.df.columns
 
         # plot original class distribution
-        from my_fraud_detection_logic import plot_classes
         import matplotlib.pyplot as plt
 
         fig, ax = plt.subplots(1, 1, figsize=(8, 8))
@@ -192,17 +194,12 @@ class FeatureEngineering(object):
         current.card.append(Image.from_matplotlib(fig))
 
         # split and store full data
-        from my_fraud_detection_logic import train_test_split_full_data
-
         (
             self.X_train_full,
             self.X_test_full,
             self.y_train_full,
             self.y_test_full,
         ) = train_test_split_full_data(self.df)
-
-        # scale features
-        from my_fraud_detection_logic import scale_features
 
         self.df_scaled = scale_features(self.df)
 
@@ -217,15 +214,9 @@ class FeatureEngineering(object):
         # plot_correlation_matrices(self.df, self.df_undersample, ax1, ax2)
         # current.card.append(Image.from_matplotlib(fig))
 
-        # remove outliers
-        from my_fraud_detection_logic import remove_outliers_from_fraud_transactions
-
         self.df_filtered = remove_outliers_from_fraud_transactions(
             self.df_scaled, ["V10", "V12", "V14"]
         )
-
-        # split data
-        from my_fraud_detection_logic import split_data
 
         self.X_train, self.X_test, self.y_train, self.y_test = split_data(
             self.df_filtered
@@ -354,7 +345,7 @@ def random_undersample(df):
     # shuffle
     df = df.sample(frac=1)
 
-    # amount of fraud classes 492 rows.
+    # amount of fraud classes.
     fraud_df = df.loc[df["Class"] == 1]
     non_fraud_df = df.loc[df["Class"] == 0][: fraud_df.shape[0]]
     evenly_distributed_df = pd.concat([fraud_df, non_fraud_df])
