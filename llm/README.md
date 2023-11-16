@@ -2,8 +2,8 @@
 
 ## Environment setup
 ```
-mamba env create -f env.yml
-mamba activate triton-ob-dev
+$ mamba env create -f env.yml
+$ mamba activate triton-ob-dev
 ```
 
 ## Deploy model to cloud storage
@@ -14,7 +14,7 @@ $ python flow.py --environment=pypi run --model-repo $S3_URI
 
 # Set up the server
 
-## 1. Get the model repository
+## Get the model repository
 
 #### Install AWS CLI
 [Follow instructions based on your server OS](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -54,8 +54,8 @@ Now look inside the `triton` directory, where you should see one or more model r
 
 ## Launch Triton Server from NGC Container
 ```
-export MODEL_REPO=triton
-docker run --rm --net=host -v ${PWD}/$MODEL_REPO:/$MODEL_REPO nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
+$ export MODEL_REPO=triton
+$ docker run --rm --net=host -v ${PWD}/$MODEL_REPO:/$MODEL_REPO nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
 
 $ docker run --rm -d -p 8000:8000 -p 8001:8001 -p 8002:8002 -v ${PWD}/$MODEL_REPO:/$MODEL_REPO --name tritonserver nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
 ```
@@ -74,18 +74,25 @@ I1116 12:19:52.022197 1 http_server.cc:4497] Started HTTPService at 0.0.0.0:8000
 I1116 12:19:52.064891 1 http_server.cc:270] Started Metrics Service at 0.0.0.0:8002
 ```
 
-
 ## Make requests
 
 To simulate a client, open up the server in a new terminal and use this getting started script.
 
 # Start client
+
 Once the container is set up, you can simulate a client making an API request.
+
 First, install the Triton Python client:
 ```
 $ pip install tritonclient[all]
 ```
+
 Then, you can copy the `serve/client.py` script to the server and simulate another application requests predictions from the API:
 ```
-
+from client import *
+_ = batch_inference([
+    ["I want to use AI technology to help humans and other animals live more fulfilling lives. How can AI help?"],
+    ["Write a concise roadmap for how AI can generate abudance without runaway wealth inequality."],
+    ["Write a set of fun activities I can do with my nieces."]
+])
 ```
