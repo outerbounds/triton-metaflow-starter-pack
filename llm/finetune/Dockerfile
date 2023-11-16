@@ -1,0 +1,2 @@
+FROM --platform=linux/amd64 pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+RUN pip install transformers==4.31.0 peft==0.4.0 datasets==2.14.5 bitsandbytes==0.40.2 accelerate==0.23.0 trl==0.4.7 scipy==1.11.3 tensorboard==2.14.1
