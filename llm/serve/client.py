@@ -3,8 +3,7 @@ import tritonclient.http as httpclient
 import time
 import numpy as np
 
-model_name = "llama2"
-
+model_name="FinetuneLlama-212266"
 
 def user_text_to_inputs(
     user_prompt_list: list[str],
