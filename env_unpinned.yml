@@ -1,0 +1,17 @@
+name: triton-ob-dev
+channels: 
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - metaflow
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - pandas
+  - treelite
+  - xgboost
+  - pip:
+    - imbalanced-learn
+    - kubernetes
+    - pylint

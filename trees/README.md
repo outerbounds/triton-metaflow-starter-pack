@@ -14,7 +14,7 @@ python train/flow.py --environment=pypi run --model-repo $S3_URI
 
 # Set up the server
 
-## 1. Get the models
+## Get the models
 
 ### Path 1: Manually unpack training artifacts
 
@@ -33,9 +33,9 @@ $ aws s3 cp --recursive s3://outerbounds-datasets/triton/tree-models ./$MODEL_RE
 ```
 
 ### Path 2: Automatically unpack training artifacts
-*This approach requires a consistent Metaflow config file across training and server VMs*
+*Path 2 requires pulling flow artifacts from S3. This requires a consistent Metaflow config file across training and server VMs.*
 
-The following script will download the triton model repository, including the config and treelite artifact from S3.
+The following script will download the Triton model repository, including the config and [treelite](https://treelite.readthedocs.io/en/latest/) artifact from S3.
 ```
 $ python serve/load_train_artifacts.py
 ```
