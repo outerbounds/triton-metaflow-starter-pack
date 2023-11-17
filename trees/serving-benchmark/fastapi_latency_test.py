@@ -10,8 +10,9 @@ import requests
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 def fastapi_predict(arr):
+    endpoint_uri_base = "localhost:8000"
     endpoint = "predict?data={}".format(json.dumps(arr.tolist()))
-    url = "localhost:8000/{}".format(endpoint)
+    url = "{}/{}".format(endpoint_uri_base, endpoint)
     response = requests.get(url, verify=False, proxies={'https': endpoint_uri_base})
     return response.json()["prediction"]
 
