@@ -9,10 +9,7 @@ import time
 import sys
 import os
 
-# from load_train_artifacts import get_test_dataset
-
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-
 
 def triton_predict(client, model_name, arr, protocol="http"):
     batch_sz, n_features = arr.shape
@@ -103,10 +100,10 @@ if __name__ == "__main__":
 
     # basic API request
     batch_sz = 2
-
-    # get_test_dataset assumes you can pull Metaflow results from the server.
-    # here we manually construct data from scratch to show form of the dataset.
+    # from load_train_artifacts import get_test_dataset
     # X_test, y_test = get_test_dataset(batch_sz = batch_sz)
+    # get_test_dataset assumes you can pull Metaflow results from the server.
+    # for demo we manually construct data from scratch to show form of the dataset.
     X_test = np.array(
         [
             [
