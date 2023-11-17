@@ -70,4 +70,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     triton_latencies = triton_main(args.num_samples)
+
+    if not os.path.exists(args.results_dir):
+        os.makedirs(args.results_dir)
     np.save(f'{args.results_dir}/triton_latencies.npy', triton_latencies)

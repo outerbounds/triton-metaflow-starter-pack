@@ -47,4 +47,6 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     fastapi_latencies = fast_api_main(args.num_samples)
+    if not os.path.exists(args.results_dir):
+        os.makedirs(args.results_dir)
     np.save(f'{args.results_dir}/fastapi_latencies.npy', fastapi_latencies)
