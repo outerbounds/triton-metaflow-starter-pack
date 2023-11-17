@@ -13,3 +13,33 @@ You can find the included solutions in this table:
 | :---: | :---: | :---: | :---: | :---: |
 | Basic Triton + RAPIDS | Triton | FIL | Treelite | ？|
 | Basic FastAPI | FastAPI | Uvicorn | Pickle | ？|
+
+# Instructions
+
+## Run `create_model.py`
+
+You can either run it directly on the server, and store artifacts locally:
+```
+python create_model.py -l
+```
+or you can run it from anywhere with access to push to an S3 bucket:
+```
+python create_model.py --s3_root s3://outerbounds-datasets/triton/tree-models-benchmark/
+```
+
+## Setup the server instance
+Clone this repository:
+```
+git clone https://github.com/outerbounds/triton-metaflow-starter-pack.git
+cd triton-metaflow-starter-pack/trees/serving-benchmark
+```
+
+Set up the dependencies:
+```
+pip install -r requirements.txt
+```
+
+## Run the benchmark
+```
+bash benchmark_run.sh
+```
