@@ -7,6 +7,40 @@ import os
 N_SAMPLES = 100000
 N_FEATURES = 30
 
+config = """
+backend: "fil"
+max_batch_size: 8192
+input [
+  {{
+    name: "input__0"
+    data_type: TYPE_FP32
+    dims: [ {dims} ]
+  }}
+]
+output [
+  {{
+    name: "output__0"
+    data_type: TYPE_FP32
+    dims: [ 1 ]
+  }}
+]
+parameters [
+  {{
+    key: "model_type"
+    value: {{ string_value: "treelite_checkpoint" }}
+  }},
+  {{
+    key: "output_class"
+    value: {{ string_value: "true" }}
+  }},
+  {{
+    key: "threshold"
+    value: {{ string_value: "0.5000" }}
+  }}
+]
+instance_group [{{ kind: KIND_CPU }}]
+"""
+
 def main(
   store_in_local_repo = True,
   s3_root = "s3://outerbounds-datasets/triton/tree-models-benchmark/" # if not store_in_local_repo
@@ -36,36 +70,6 @@ def main(
 
     # set params
     deployment_name = "triton"
-    config = """
-    name: "basic-triton-sklearn"
-    backend: "fil"
-    max_batch_size: 8192
-    input [
-      {{
-        name: "input__0"
-        data_type: TYPE_FP32
-        dims: [ {dims} ]
-      }}
-    ]
-    output [
-      {{
-        name: "output__0"
-        data_type: TYPE_FP32
-        dims: [ 1 ]
-      }}
-    ]
-    parameters [
-      {{
-        key: "model_type"
-        value: {{ string_value: "treelite_checkpoint" }}
-      }},
-      {{
-        key: "output_class"
-        value: {{ string_value: "true" }}
-      }}
-    ]
-    instance_group [{{ kind: KIND_CPU }}]
-    """
 
     if store_in_local_repo:
         model_repo_path = os.path.join(os.getcwd(), "basic-triton", "model-repo")
