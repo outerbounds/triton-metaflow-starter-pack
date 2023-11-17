@@ -5,6 +5,7 @@ import time
 import numpy as np
 from create_model import N_SAMPLES, N_FEATURES
 import tritonclient.http as triton_http
+import tqdm
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
@@ -33,7 +34,7 @@ def triton_predict(client, model_name, arr, protocol="http"):
     )
     return response.as_numpy("output__0")
 
-def main(N=1_000_000):
+def triton_main(N=1_000_000):
     data_point = np.random.rand(1, N_FEATURES).astype(np.float32)
 
     ###########################
@@ -51,7 +52,7 @@ def main(N=1_000_000):
         res = triton_predict(client, model_name, data_point)
 
     triton_latencies = []
-    for _ in range(N):
+    for _ in tqdm(range(N)):
         t0 = time.time()
         res = triton_predict(client, model_name, data_point)
         t1 = time.time()
@@ -68,4 +69,5 @@ if __name__ == '__main__':
         '-n', '--num-samples', type=int, default=1_000_000
     )
     args = parser.parse_args()
-    latencies = main(args.num_samples)
+    triton_latencies = triton_main(args.num_samples)
+    np.save(f'{args.results_dir}/triton_latencies.npy', triton_latencies)

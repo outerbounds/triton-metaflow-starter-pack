@@ -7,6 +7,7 @@ from create_model import N_SAMPLES, N_FEATURES
 import json
 import requests
 
+
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 def fastapi_predict(arr):
@@ -16,7 +17,7 @@ def fastapi_predict(arr):
     response = requests.get(url, verify=False, proxies={'https': endpoint_uri_base})
     return response.json()["prediction"]
 
-def main(N=1_000_000):
+def fast_api_main(N=1_000_000):
     data_point = np.random.rand(1, N_FEATURES).astype(np.float32)
 
     ############################
@@ -28,7 +29,7 @@ def main(N=1_000_000):
         res = fastapi_predict(data_point)
 
     fastapi_latencies = []
-    for _ in range(N):
+    for _ in tqdm(range(N)):
         t0 = time.time()
         res = fastapi_predict(data_point)
         t1 = time.time()
@@ -45,4 +46,5 @@ if __name__ == '__main__':
         '-n', '--num-samples', type=int, default=1_000_000
     )
     args = parser.parse_args()
-    latencies = main(args.num_samples)
+    fastapi_latencies = fast_api_main(args.num_samples)
+    np.save(f'{args.results_dir}/fastapi_latencies.npy', fastapi_latencies)
