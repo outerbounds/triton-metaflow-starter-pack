@@ -1,4 +1,6 @@
-# Run the training/tuning workflows manually
+# Run the fine-tuning workflows manually
+
+This workflow fine-tunes a QLoRA for Llama2 with Metaflow and packages up resulting artifacts so they are ready to serve with Triton.
 
 ## Environment setup
 ```
