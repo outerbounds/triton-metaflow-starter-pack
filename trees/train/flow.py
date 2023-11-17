@@ -2,7 +2,7 @@ from metaflow import FlowSpec, step, batch, conda_base, pypi_base, card, current
 from metaflow.cards import Image
 
 # user packages
-from dependencies import pypi_common_pkgs, pypi_feature_eng_pkgs, pypi_xgb_pkg
+from dependencies import *
 from ops import ModelStore
 from fraud_detection_logic import FeatureEngineering, ModelTraining
 
@@ -77,9 +77,6 @@ class FraudClassifierTreeSelection(
                 self.best_model_type = input.model_name
         self.scores = pd.DataFrame(scores)
 
-        # push best model
-        self.store_sklearn_estimator(model=self.best_model)
-
         # plot learning curves
         if self._plot_learning_curves:
             import matplotlib.pyplot as plt
@@ -93,6 +90,13 @@ class FraudClassifierTreeSelection(
             fig.tight_layout()
             current.card.append(Image.from_matplotlib(fig))
 
+        self.next(self.deploy)
+
+    @batch(cpu=1, memory=8000)
+    @step
+    def deploy(self):
+        # put artifacts triton needs in the format it expects in the s3 model repo
+        self.store_sklearn_estimator(model=self.best_model)
         self.next(self.end)
 
     @step

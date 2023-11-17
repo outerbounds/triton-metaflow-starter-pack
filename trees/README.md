@@ -29,7 +29,7 @@ $ mkdir $MODEL_REPO
 ```
 
 #### Move artifacts from S3 to repository
-The following script will download the Triton model repository, including the config and [treelite](https://treelite.readthedocs.io/en/latest/) artifact from S3.
+The following script will download the Triton model repository, including the config and [treelite](https://treelite.readthedocs.io/en/latest/) artifact from S3. Copy it to your inference server. 
 ```
 $ python load_train_artifacts.py
 ```
