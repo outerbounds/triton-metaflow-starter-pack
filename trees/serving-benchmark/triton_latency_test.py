@@ -33,10 +33,12 @@ def triton_predict(client, model_name, arr, protocol="http"):
     )
     return response.as_numpy("output__0")
 
-def main():
+def main(N=1_000_000):
     data_point = np.random.rand(1, N_FEATURES).astype(np.float32)
 
+    ###########################
     ### Triton latency test ###
+    ###########################
     url = "localhost:8000" # http
     model_name = "model-repo"
 
@@ -48,10 +50,22 @@ def main():
     for _ in range(10):
         res = triton_predict(client, model_name, data_point)
 
+    triton_latencies = []
+    for _ in range(N):
+        t0 = time.time()
+        res = triton_predict(client, model_name, data_point)
+        t1 = time.time()
+        triton_latencies.append(t1-t0)
+    
+    return triton_latencies
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-r', '--results-dir', type=str, default='results'
     )
+    parser.add_argument(
+        '-n', '--num-samples', type=int, default=1_000_000
+    )
     args = parser.parse_args()
-    main()
+    latencies = main(args.num_samples)
