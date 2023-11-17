@@ -23,7 +23,7 @@ def main(
     )
 
     # make data
-    features, targets = np.random.random((N_SAMPLES, N_FEATURES)), np.choice([0, 1], N_SAMPLES)
+    features, targets = np.random.rand(N_SAMPLES, N_FEATURES), np.random.choice([0, 1], N_SAMPLES)
     rf_clf.fit(features, targets)
 
     ###########################################
