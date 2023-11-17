@@ -16,7 +16,7 @@ def triton_predict(client, model_name, arr, protocol="http"):
     if arr.dtype != np.float32:
         arr = arr.astype(np.float32)
         logging.info(
-            f"⚠️  Input array to `triton_predict` was not of type np.float32. Casting to np.float32."
+            f"⚠️ Input array to `triton_predict` was not of type np.float32. Casting to np.float32."
         )
 
     if protocol == "http":

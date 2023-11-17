@@ -28,17 +28,10 @@ $ export MODEL_REPO=triton
 $ mkdir $MODEL_REPO
 ```
 
-#### Manually move artifacts from S3 to repository
-```
-$ aws s3 cp --recursive s3://outerbounds-datasets/triton/tree-models ./$MODEL_REPO
-```
-
-### Path 2: Automatically unpack training artifacts
-*Path 2 requires pulling flow artifacts from S3. This requires a consistent Metaflow config file across training and server VMs.*
-
+#### Move artifacts from S3 to repository
 The following script will download the Triton model repository, including the config and [treelite](https://treelite.readthedocs.io/en/latest/) artifact from S3.
 ```
-$ python serve/load_train_artifacts.py
+$ python load_train_artifacts.py
 ```
 
 ## Launch Triton Server from NGC Container
@@ -72,5 +65,5 @@ Then, you can copy the `serve/client.py` script to the server and simulate anoth
 ```
 $ export FLOW_NAME=FraudClassifierTreeSelection
 $ export RUN_ID=... 
-$ python client.py -m $FLOW_NAME-RUN_ID
+$ python client.py -m $FLOW_NAME-$RUN_ID
 ```
