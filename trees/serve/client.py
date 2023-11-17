@@ -14,23 +14,6 @@ import os
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
-def is_triton_ready(model_name):
-    server_start = time.time()
-    while True:
-        try:
-            if client.is_server_ready() and client.is_model_ready(model_name):
-                return True
-        except triton_utils.InferenceServerException:
-            pass
-        if time.time() - server_start > TIMEOUT:
-            print(
-                "Server was not ready before given timeout. Check the logs below for possible issues."
-            )
-            os.system("docker logs tritonserver")
-            return False
-        time.sleep(1)
-
-
 def triton_predict(client, model_name, arr, protocol="http"):
     batch_sz, n_features = arr.shape
     if arr.dtype != np.float32:
