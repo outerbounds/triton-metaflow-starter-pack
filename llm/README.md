@@ -2,14 +2,15 @@
 
 ## Environment setup
 ```
-$ mamba env create -f env.yml
+$ mamba env create -f env_unpinned.yml
 $ mamba activate triton-ob-dev
+$ cd llm
 ```
 
 ## Deploy model to cloud storage
 ```
 $ export S3_URI=s3://outerbounds-datasets/triton/llama2/
-$ python flow.py --environment=pypi run --model-repo $S3_URI
+$ python finetune/flow.py --environment=pypi run --model-repo $S3_URI
 ```
 
 # Set up the server
