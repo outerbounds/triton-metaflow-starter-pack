@@ -1,4 +1,4 @@
-from metaflow import FlowSpec, step, pypi, batch, environment, S3, current
+from metaflow import FlowSpec, step, pypi, batch, environment, S3, current, Parameter
 from ops import ModelStore
 
 N_GPU = 1
@@ -8,6 +8,9 @@ IMAGE = "eddieob/llama2-finetune-qlora:latest"
 
 
 class FinetuneLlama(FlowSpec, ModelStore):
+
+    dataset_fraction = Parameter("-d", "dataset-fraction", default=0.05)
+
     @step
     def start(self):
         self.next(self.train)
@@ -24,7 +27,7 @@ class FinetuneLlama(FlowSpec, ModelStore):
         from params import model_path
         from model import main
 
-        main(dataset_fraction=0.05)
+        main(dataset_fraction=self.dataset_fraction)
         self.store_transformer(model_path)
         self.next(self.end)
 
