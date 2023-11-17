@@ -19,5 +19,5 @@ docker stop tritonserver
 ###########
 # fastapi #
 ###########
-cd basic-fastapi && uvicorn server:app
+cd basic-fastapi && uvicorn server:app &> "fastapi-uvicorn-server.logs"
 python fastapi_latency_test.py

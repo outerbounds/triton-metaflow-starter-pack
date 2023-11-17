@@ -4,7 +4,7 @@ import sys
 import time 
 import numpy as np
 from create_model import N_SAMPLES, N_FEATURES
-import tritonclient.http as triton_http
+import json
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
