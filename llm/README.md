@@ -77,7 +77,7 @@ I1116 12:19:52.064891 1 http_server.cc:270] Started Metrics Service at 0.0.0.0:8
 
 ## Make requests
 
-To simulate a client, open up the server in a new terminal and use this getting started script.
+To simulate a client, you can directly make requests (e.g., with curl) or see the getting started script in the next section to use the Triton Python client that makes it easier to communicate with the API from Python code. Triton has similar clients in other languages too.
 
 # Start client
 
@@ -88,7 +88,7 @@ First, install the Triton Python client:
 $ pip install tritonclient[all]
 ```
 
-Then, you can copy the `serve/client.py` script to the server and simulate another application requests predictions from the API:
+Then, you can copy the `serve/client.py` script to the server and simulate another application requesting predictions from your inference API:
 ```
 from client import *
 _ = batch_inference([
