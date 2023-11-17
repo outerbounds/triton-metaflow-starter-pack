@@ -45,7 +45,7 @@ After a few seconds, you can check the container is running:
 ```
 $ docker ps
 ```
-and then check the server started correctly:
+and then check the server logs:
 ```
 $ docker logs tritonserver
 
@@ -61,7 +61,7 @@ First, install the Triton Python client:
 ```
 $ pip install tritonclient[all]
 ```
-Then, you can copy the `serve/client.py` script to the server and simulate another application requests predictions from the API:
+Then, you can copy the `serve/client.py` script to the server and simulate another application requesting predictions from the API:
 ```
 $ export FLOW_NAME=FraudClassifierTreeSelection
 $ export RUN_ID=... 

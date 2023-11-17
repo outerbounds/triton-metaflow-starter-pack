@@ -2,7 +2,7 @@ from metaflow import FlowSpec, step, batch, conda_base, pypi_base, card, current
 from metaflow.cards import Image
 
 # user packages
-from dependencies import *
+from dependencies import pypi_common_pkgs, pypi_feature_eng_pkgs, pypi_xgb_pkg
 from ops import ModelStore
 from fraud_detection_logic import FeatureEngineering, ModelTraining
 
@@ -87,9 +87,8 @@ class FraudClassifierTreeSelection(
             fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(
                 2, 2, figsize=(18, 10), sharey=True
             )
-            axs = [ax1, ax2, ax3, ax4]
             self.plot_learning_curves(
-                best_models, axs, self.X_train_full, self.y_train_full
+                best_models, [ax1, ax2, ax3, ax4], self.X_train_full, self.y_train_full
             )
             fig.tight_layout()
             current.card.append(Image.from_matplotlib(fig))

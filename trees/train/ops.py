@@ -60,5 +60,4 @@ class ModelStore:
                     (f"{self.deployment_name}/config.pbtxt", self.config),
                 ]
             )
-            msg = f"The model and its Triton config has deployed at {url}"
-            logging.info(msg)
+            logging.info(f"The model and its Triton config is at {url}")

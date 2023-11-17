@@ -10,14 +10,14 @@ def get_triton_repo_from_s3(
     run_id,
     s3_root="s3://outerbounds-datasets/triton/tree-models/",
     flow_name="FraudClassifierTreeSelection",
-    triton_model_dir="triton",
+    local_triton_model_dir="triton",
 ):
 
     with S3(s3root=s3_root) as s3:
         objs = s3.get_recursive(f"{flow_name}-{run_id}")
 
         cwd = os.getcwd()
-        dir_name = os.path.join(cwd, triton_model_dir)
+        dir_name = os.path.join(cwd, local_triton_model_dir)
         os.makedirs(dir_name, exist_ok=True)
 
         for obj in objs:
@@ -34,6 +34,6 @@ def get_test_dataset(flow_name="FraudClassifierTreeSelection", batch_sz=10):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--run-id", type=str, default=None)
+    parser.add_argument("-r", "--run-id", type=str, required=True)
     args = parser.parse_args()
     get_triton_repo_from_s3(args.run_id)
