@@ -7,6 +7,7 @@ from create_model import N_SAMPLES, N_FEATURES
 import json
 import requests
 from tqdm import tqdm
+import os
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 

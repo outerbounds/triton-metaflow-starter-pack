@@ -6,6 +6,7 @@ import numpy as np
 from create_model import N_SAMPLES, N_FEATURES
 import tritonclient.http as triton_http
 from tqdm import tqdm
+import os
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
