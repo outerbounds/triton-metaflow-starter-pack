@@ -1,0 +1,29 @@
+
+name: "basic-triton-sklearn"
+backend: "fil"
+max_batch_size: 8192
+input [
+  {
+    name: "input__0"
+    data_type: TYPE_FP32
+    dims: [ 4 ]
+  }
+]
+output [
+  {
+    name: "output__0"
+    data_type: TYPE_FP32
+    dims: [ 1 ]
+  }
+]
+parameters [
+  {
+    key: "model_type"
+    value: { string_value: "treelite_checkpoint" }
+  },
+  {
+    key: "output_class"
+    value: { string_value: "true" }
+  }
+]
+instance_group [{ kind: KIND_CPU }]
