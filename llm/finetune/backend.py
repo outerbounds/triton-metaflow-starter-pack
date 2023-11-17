@@ -27,8 +27,10 @@ import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-flow_name = "FinetuneLlama"
-run_id = "212266"
+flow_artifacts_dir = sorted(os.listdir("/triton"))[-1]
+flow_name = flow_artifacts_dir.split("-")[0]
+run_id = flow_artifacts_dir.split("-")[1]
+
 local_path_prefix = f"/triton/{flow_name}-{run_id}"
 save_pretrained_path = "llama-2-7b-dolly15k"
 checkpoint_model_path = "%s/1/%s/model" % (local_path_prefix, save_pretrained_path)

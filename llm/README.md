@@ -12,7 +12,7 @@ $ cd llm
 ## Deploy model to cloud storage
 ```
 $ export S3_URI=s3://outerbounds-datasets/triton/llama2/
-$ python finetune/flow.py --environment=pypi run --model-repo $S3_URI
+$ python finetune/flow.py run --model-repo $S3_URI
 ```
 
 # Set up the server
@@ -30,20 +30,19 @@ $ mkdir $MODEL_REPO
 
 #### Manually move artifacts from S3 to repository
 
-First we download the compressed model repository from S3:
+You will need to copy the script in `serve/load_finetune_artifacts.py` into the machine that will run the Triton server.
+Then we can install Metaflow and use the script to unpack our fine-tuning artifacts in the form Triton expects.
 ```
-$ aws s3 cp --recursive s3://outerbounds-datasets/triton/llama2/ .
-```
-Then we unpack it - you will need to copy the script in `serve/load_finetune_artifacts.py` into the machine that will run the Triton server.
-```
+$ python -m pip install metaflow
 $ python load_finetune_artifacts.py
 ```
 
-Now look inside the `triton` directory, where you should see one or more model repositories structure like this:
+Now look inside the `triton` directory, where you should see one or more model repositories structured like this:
 ```
 | <FLOW_NAME>-<RUN_ID>
 ----| 1
---------| backend.py
+--------| model.py
+--------| setup_env.py
 --------| <save_pretrained_path>
 ------------| model
 ----------------| adapter_config.json
@@ -58,8 +57,6 @@ Now look inside the `triton` directory, where you should see one or more model r
 ## Launch Triton Server from NGC Container
 ```
 $ export MODEL_REPO=triton
-$ docker run --rm --net=host -v ${PWD}/$MODEL_REPO:/$MODEL_REPO nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
-
 $ docker run --rm -d -p 8000:8000 -p 8001:8001 -p 8002:8002 -v ${PWD}/$MODEL_REPO:/$MODEL_REPO --name tritonserver nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
 ```
 

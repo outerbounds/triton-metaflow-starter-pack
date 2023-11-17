@@ -3,7 +3,7 @@ import tritonclient.http as httpclient
 import time
 import numpy as np
 
-model_name="FinetuneLlama-212266"
+model_name="FinetuneLlama-212295"
 
 def user_text_to_inputs(
     user_prompt_list: list[str],
@@ -51,7 +51,7 @@ def time_single_request():
     print(f"Total time elapsed: {tm2-tm1:0.2f} seconds")
 
 
-def chat_iter(user_prompt, model_version="1"):
+def chat_iter(user_prompt, model_name=model_name, model_version="1"):
     inputs, outputs = user_text_to_inputs([[user_prompt]])
 
     with httpclient.InferenceServerClient(
@@ -77,7 +77,7 @@ def batch_inference(
         ["Who is Abby Wambach?"],
         ["What is the first key decision when starting a new business?"],
     ],
-    model_name="llama2",
+    model_name=model_name,
     model_version="1",
     loud=True,
 ):

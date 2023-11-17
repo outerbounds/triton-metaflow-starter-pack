@@ -9,7 +9,7 @@ IMAGE = "eddieob/llama2-finetune-qlora:latest"
 
 class FinetuneLlama(FlowSpec, ModelStore):
 
-    dataset_fraction = Parameter("-d", "dataset-fraction", default=0.05)
+    dataset_fraction = Parameter("dataset-fraction", default=0.05, help="How much of the Dolly15K dataset to use.")
 
     @step
     def start(self):

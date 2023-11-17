@@ -3,7 +3,10 @@ import os
 from tarfile import TarFile
 from io import BytesIO
 import argparse
+import logging
+import sys
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 def extract_tar_bytes(tar_bytes, path):
     buf = BytesIO(tar_bytes)
@@ -19,14 +22,9 @@ def get_triton_repo_from_s3(
 ):
     with S3(s3root=s3_root) as s3:
         obj = s3.get(f"{flow_name}-{run_id}")
+        logging.info(f"Extracting contents of {obj.url} to ./{triton_model_dir}")
         extract_tar_bytes(obj.blob, triton_model_dir)
-
-    # triton python backend expects model.py
-    os.rename(
-        os.path.join(triton_model_dir, f"{flow_name}-{run_id}", "1", "backend.py"),
-        os.path.join(triton_model_dir, f"{flow_name}-{run_id}", "1", "model.py"),
-    )
-
+        logging.info(f"🥳🦙🥳 Done.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -2,7 +2,7 @@ import os
 import shutil
 from subprocess import check_output
 from metaflow import S3, current, Parameter
-import logging
+import logging 
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -38,30 +38,28 @@ dynamic_batching {{
 }}
 """
 
-
 def make_tar_bytes(source_dir):
     from tarfile import ExtractError, TarFile
     from io import BytesIO
-
     buf = BytesIO()
     with TarFile(mode="w", fileobj=buf) as tar:
         tar.add(source_dir)
     return buf.getvalue()
 
+class ModelStore():
 
-class ModelStore:
     model_repo = Parameter("model-repo", required=True, help="S3 path to model repo")
 
     def store_transformer(self, save_pretrained_path):
+
         self.deployment_name = f"{current.flow_name}-{current.run_id}"
-        self.config = LLAMA_PYTHON_BACKEND_CONFIG.format(
-            deployment_name=self.deployment_name
-        )
+        self.config = LLAMA_PYTHON_BACKEND_CONFIG.format(deployment_name=self.deployment_name) 
 
         # make file structure like this and zip it
         # | FLOW_NAME-RUN_ID
         # ----| 1
         # --------| backend.py
+        # --------| setup_env.py
         # --------| <save_pretrained_path>
         # ------------| model
         # ----------------| adapter_config.json
@@ -79,17 +77,19 @@ class ModelStore:
         with open(f"{self.deployment_name}/config.pbtxt", "w") as f:
             f.write(self.config)
 
-        # write backend
-        _ = shutil.move("backend.py", f"{self.deployment_name}/1/backend.py")
+        # run-info.txt will be used in the backend.py on the inference server
+        with open(f"{self.deployment_name}/1/run-info.txt", "w") as f:
+            f.write(f"flow_name={current.flow_name}\nrun_id={current.run_id}")
+
+        # rewrite backend.py as model.py and include in pkg
+        _ = shutil.move("backend.py", f"{self.deployment_name}/1/model.py")
+
+        # write setup_env
+        _ = shutil.move("setup_env.py", f"{self.deployment_name}/1/setup_env.py")
 
         # write model
-        _ = shutil.move(
-            save_pretrained_path, f"{self.deployment_name}/1/{save_pretrained_path}"
-        )
-
+        _ = shutil.move(save_pretrained_path, f"{self.deployment_name}/1/{save_pretrained_path}")
+        
         with S3(s3root=self.model_repo) as s3:
-            url = s3.put(
-                key=self.deployment_name, obj=make_tar_bytes(self.deployment_name)
-            )
-            msg = f"The model and its Triton config has deployed at {url}"
-            logging.info(msg)
+            url = s3.put(key=self.deployment_name, obj=make_tar_bytes(self.deployment_name))
+            logging.info(f"The model and its Triton config has deployed at {url}")
