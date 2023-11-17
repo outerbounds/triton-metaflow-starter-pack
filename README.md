@@ -6,4 +6,9 @@ This code will help you get started using NVIDIA's [Triton Inference Server](htt
 
 There are subdirectories each containing different getting started toolkits for using Triton with Outerbounds. You can find detailed instructions in the README files in each subdirectory.
 - The [trees](./trees) repository provides a template for how to use Metaflow to orchestrate training and tuning of Scikit-learn, XGBoost, or LightGBM models, pushing the resulting model to cloud storage so it is ready to be used on a Triton Inference Server.
-- The [llm](./llm) repository provides a template for how to use Metaflow to orchestrate fine-tuning for transformer models, pushing the resulting model and tokenizer state to cloud storage so it is ready to be used on a Triton Inference Server. 
+- The [llm](./llm) repository provides a template for how to use Metaflow to orchestrate fine-tuning for transformer models, pushing the resulting model and tokenizer state to cloud storage so it is ready to be used on a Triton Inference Server.
+
+# What you need to get the most out of it
+- Set up an inference server where you want to host models.
+    - Best to have a GPU for `/llm` 
+- Access to a [Metaflow deployment](https://outerbounds.com/engineering/welcome/)
