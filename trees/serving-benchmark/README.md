@@ -40,6 +40,25 @@ pip install -r requirements.txt
 ```
 
 ## Run the benchmark
+
+### Run the Triton Benchmark
 ```
-bash benchmark_run.sh
+export MODEL_REPO=basic-triton
+docker run --rm -d -p 8000:8000 -p 8001:8001 -p 8002:8002 -v ${PWD}/$MODEL_REPO:/$MODEL_REPO --name tritonserver nvcr.io/nvidia/tritonserver:23.10-py3 tritonserver --model-repository=/$MODEL_REPO
+python triton_latency_test.py -n 10000
+docker stop tritonserver
+```
+
+### Run the FastAPI Benchmark
+
+##### Start the server
+```
+cd basic-fastapi
+uvicorn server:app
+```
+
+##### Run the test
+Open a new terminal while uvicorn is running:
+```
+python fastapi_latency_test.py
 ```
