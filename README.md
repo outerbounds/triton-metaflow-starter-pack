@@ -1,3 +1,11 @@
+<table>
+    <tr><img style="display: block; float: center; max-width: 80%; height: auto; margin: auto; float: none!important;" src="img/metaflow-triton.png"/></tr> 
+    <tr>
+        <td style="padding-top: 100px"> <img src="img/lineage.png"/>
+        <td style="padding-top: 100px"> <img src="img/server-arch.png"/> 
+    </tr>
+</table>
+
 # What is this repo
 
 This code will help you get started using NVIDIA's [Triton Inference Server](https://developer.nvidia.com/triton-inference-server) and [Outerbounds](https://outerbounds.com/platform) (built on open-source [Metaflow](https://docs.metaflow.org/)).
