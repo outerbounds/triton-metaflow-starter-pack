@@ -9,10 +9,10 @@ The benchmark is structured as follows:
 
 You can find the included solutions in this table:
 
-| Name | Frontend | Backend | Model Seriazation | Time per query |
-| :---: | :---: | :---: | :---: | :---: |
-| Basic Triton + RAPIDS | Triton | FIL | Treelite | ？|
-| Basic FastAPI | FastAPI | Uvicorn | Pickle | ？|
+| Name | Frontend | Backend | Model Seriazation | Mean time per query (ms) | Std time per query (ms) | 
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| Basic Triton + RAPIDS | Triton | FIL | Treelite | 0.44 | 0.64 |
+| Basic FastAPI | FastAPI | Uvicorn | Pickle | 5.15 | 0.9 |
 
 # Instructions
 
